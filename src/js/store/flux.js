@@ -1,58 +1,117 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
-		store: {
-			people:[], 
-			vehicles:[],
-			planets:[],
-			favorites:[],
-			apiURL:"https://www.swapi.tech/api"
+	  store: {
+		people: [],
+		vehicles: [],
+		planets: [],
+		favorites: [],
+		peopleDetails: {
+		  description: "",
+		  properties: {}
 		},
-		actions: {
-		getPeople:() => {
-			let store=getStore()
-			fetch(store.apiURL+"/people")
-			.then(resp => resp.json())
-			.then(data => setStore({
-				people:data.results
-			}))
-			.catch(error => console.log(error))
-		},	
-		
-		getPlanets:() => {
-			let store=getStore()
-			fetch(store.apiURL+"/planets")
-			.then(resp => resp.json())
-			.then(data => setStore({
-				planets:data.results
-			}))
-			.catch(error => console.log(error))
-		},	
-
-		getVehicles:() => {
-			let store=getStore()
-			fetch(store.apiURL+"/vehicles")
-			.then(resp => resp.json())
-			.then(data => setStore({
-				vehicles:data.results
-			}))
-			.catch(error => console.log(error))
+		vehicleDetails: {
+		  description: "",
+		  properties: {}
 		},
-		addFavorite:(favorite)	 =>{
-			let store=getStore()
-			store.favorites.push(favorite)
-			setStore(store)
+		planetDetails: {
+		  description: "",
+		  properties: {}
 		},
-		deleteFavorite:(name) => {
-			let store=getStore()
-			let newFavorites=store.favorites.filter(favorite => favorite.name != name)
-			setStore({favorites:newFavorites})
-			// store.favorites=newFavorites
-			// setStore(store)
+		apiURL: "https://www.swapi.tech/api"
+	  },
+	  actions: {
+		getPeople: () => {
+		  let store = getStore();
+		  fetch(store.apiURL + "/people")
+			.then(resp => resp.json())
+			.then(data => setStore({ people: data.results }))
+			.catch(error => console.log(error));
+		},
+		getPeopleDetails: (id) => {
+		  let store = getStore();
+		  fetch(`${store.apiURL}/people/${id}`)
+			.then((response) => {
+			  if (!response.ok) {
+				throw new Error(`${response.status} - ${response.statusText}`);
+			  }
+			  return response.json();
+			})
+			.then((data) => {
+			  const peopleDetails = {
+				description: data.result.description,
+				properties: { ...data.result.properties },
+			  };
+			  setStore({ peopleDetails: peopleDetails });
+			})
+			.catch((error) => {
+			  console.log(error);
+			});
+		},
+		getPlanets: () => {
+		  let store = getStore();
+		  fetch(store.apiURL + "/planets")
+			.then(resp => resp.json())
+			.then(data => setStore({ planets: data.results }))
+			.catch(error => console.log(error));
+		},
+		getPlanetDetails: (id) => {
+		  let store = getStore();
+		  fetch(`${store.apiURL}/planet/${id}`)
+			.then((response) => {
+			  if (!response.ok) {
+				throw new Error(`${response.status} - ${response.statusText}`);
+			  }
+			  return response.json();
+			})
+			.then((data) => {
+			  const planetDetails = {
+				description: data.result.description,
+				properties: { ...data.result.properties },
+			  };
+			  setStore({ planetDetails: planetDetails });
+			})
+			.catch((error) => {
+			  console.log(error);
+			});
+		},
+		getVehicles: () => {
+		  let store = getStore();
+		  fetch(store.apiURL + "/vehicles")
+			.then(resp => resp.json())
+			.then(data => setStore({ vehicles: data.results }))
+			.catch(error => console.log(error));
+		},
+		getVehicleDetails: (id) => {
+		  let store = getStore();
+		  fetch(`${store.apiURL}/vehicle/${id}`)
+			.then((response) => {
+			  if (!response.ok) {
+				throw new Error(`${response.status} - ${response.statusText}`);
+			  }
+			  return response.json();
+			})
+			.then((data) => {
+			  const vehicleDetails = {
+				description: data.result.description,
+				properties: { ...data.result.properties },
+			  };
+			  setStore({ vehicleDetails: vehicleDetails });
+			})
+			.catch((error) => {
+			  console.log(error);
+			});
+		},
+		addFavorite: (item) => {
+		  let store = getStore();
+		  setStore({ favorites: [...store.favorites, item] });
+		},
+		removeFavorite: (item) => {
+		  let store = getStore();
+		  setStore({ favorites: store.favorites.filter(favorite => favorite !== item) });
 		}
-		
-
-		}
+	  }
 	};
-};
-
-export default getState;
+  };
+  
+  export default getState;
+  
