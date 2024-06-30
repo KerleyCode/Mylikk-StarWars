@@ -17,6 +17,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 		  description: "",
 		  properties: {}
 		},
+		
 		apiURL: "https://www.swapi.tech/api"
 	  },
 	  actions: {
@@ -101,14 +102,17 @@ const getState = ({ getStore, getActions, setStore }) => {
 			  console.log(error);
 			});
 		},
-		addFavorite: (item) => {
-		  let store = getStore();
-		  setStore({ favorites: [...store.favorites, item] });
-		},
-		removeFavorite: (item) => {
-		  let store = getStore();
-		  setStore({ favorites: store.favorites.filter(favorite => favorite !== item) });
-		}
+		addFavorite: (favorite) => {
+			let store = getStore();
+			if (!store.favorites.some((item) => item.name === favorite.name)) {
+			  setStore({ favorites: [...store.favorites, favorite] });
+			} 
+		  },
+		  
+		deleteFavorite: (item) => {
+			let store = getStore();
+			setStore({ favorites: store.favorites.filter((favorite) => favorite.name !== item.name) });
+		  },
 	  }
 	};
   };
